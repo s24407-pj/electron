@@ -26,3 +26,6 @@ publish:
   url: https://example.com/auto-updates
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
+extraResources: 
+  from: "node_modules/i2c-bus" 
+  to: "app/node_modules/i2c-bus"
