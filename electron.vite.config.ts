@@ -5,7 +5,12 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    build: {
+      rollupOptions: {
+        external: ['i2c-bus'] // Ensure it's treated as an external dependency
+      }
+    }
   },
   preload: {
     plugins: [externalizeDepsPlugin()]
