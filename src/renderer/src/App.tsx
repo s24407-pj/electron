@@ -21,7 +21,7 @@ function App(): JSX.Element {
             Documentation
           </a>
         </div>
-        <div className="action">
+        <div className="action border border-amber-500">
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
             Send IPC
           </a>
