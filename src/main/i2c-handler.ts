@@ -1,7 +1,5 @@
 import i2c from 'i2c-bus'
 import { Buffer } from 'buffer'
-import { createRequire } from 'module'
-export const nodeRequire = createRequire(import.meta.url)
 
 const MAX_PUMPS = 16 // Maksymalna liczba pomp
 
