@@ -3,6 +3,9 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import dispenseLiquid from './i2c-handler'
+import { PrismaClient, Drink } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 function createWindow(): void {
   // Create the browser window.
@@ -51,7 +54,7 @@ app.whenReady().then(() => {
   })
 
   // IPC test
-  ipcMain.on('ping', () => dispenseLiquid(1, 50))
+  ipcMain.on('dispense-liquid', () => dispenseLiquid(1, 50))
 
   createWindow()
 
@@ -73,3 +76,33 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// IPC – pobieranie drinków z bazy danych
+ipcMain.handle('get-drinks', async (): Promise<Drink[]> => {
+  try {
+    const drinks = await prisma.drink.findMany()
+    return drinks
+  } catch (error) {
+    console.error('Błąd pobierania drinków z bazy:', error)
+    throw error
+  }
+})
+
+// IPC – dodawanie nowego drinka do bazy danych
+ipcMain.handle(
+  'add-drink',
+  async (_event, data: { name: string; description?: string }): Promise<Drink> => {
+    try {
+      if (!data.name) {
+        throw new Error('Nazwa jest wymagana')
+      }
+      const newDrink = await prisma.drink.create({
+        data: { name: data.name, description: data.description || '' }
+      })
+      return newDrink
+    } catch (error) {
+      console.error('Błąd dodawania drinka do bazy:', error)
+      throw error
+    }
+  }
+)
